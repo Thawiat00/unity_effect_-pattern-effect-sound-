@@ -1,0 +1,39 @@
+{
+    "soundCategories": {
+        "player": [
+            {
+                "id": 1,
+                "key": "walking"
+            },
+            {
+                "id": 2,
+                "key": "run"
+            }
+        ],
+        "enemy": [
+            {
+                "id": 3,
+                "key": "attack"
+            },
+            {
+                "id": 4,
+                "key": "death"
+            }
+        ],
+        "boss": [
+            {
+                "id": 5,
+                "key": "roar"
+            },
+            {
+                "id": 6,
+                "key": "specialAttack"
+            }
+        ]
+    },
+    "soundFiles": {
+        "player": "Resources/sound_ftx/player",
+        "enemy": "Resources/sound_ftx/enemy",
+        "boss": "Resources/sound_ftx/boss"
+    }
+}
