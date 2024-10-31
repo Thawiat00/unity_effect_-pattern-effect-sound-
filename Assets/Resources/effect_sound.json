@@ -32,8 +32,8 @@
         ]
     },
     "soundFiles": {
-        "player": "Resources/sound_ftx/player",
-        "enemy": "Resources/sound_ftx/enemy",
-        "boss": "Resources/sound_ftx/boss"
+        "player": "sound_ftx/player",
+        "enemy": "sound_ftx/enemy",
+        "boss": "sound_ftx/boss"
     }
 }

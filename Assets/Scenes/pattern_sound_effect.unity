@@ -318,6 +318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1831539988}
   - component: {fileID: 1831539987}
+  - component: {fileID: 1831539989}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -346,6 +347,10 @@ MonoBehaviour:
       player: 
       enemy: 
       boss: 
+  observers: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!4 &1831539988
 Transform:
   m_ObjectHideFlags: 0
@@ -361,6 +366,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1831539989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831539986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d008f904bcf070047bed3affc4184bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound_manager: {fileID: 1831539987}
+  list_player_effect_sound: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
