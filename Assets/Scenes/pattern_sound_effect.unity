@@ -377,7 +377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forloading: 0
-  for_dictionary: 1
+  for_dictionary: 0
   sound_manager: {fileID: 1831539987}
   list_sort_audio: []
   list_player_effect_sound: []

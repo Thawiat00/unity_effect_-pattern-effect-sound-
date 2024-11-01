@@ -22,6 +22,8 @@ namespace soundftx
         [SerializeField]
         SoundManager sound_manager;
 
+
+        //dicionary convest effect sound
         [SerializeField]
         Dictionary<string, AudioClip> player_effect_sound;
 
@@ -38,7 +40,16 @@ namespace soundftx
         [SerializeField]
         AudioSource audioSource;
 
-     
+        [SerializeField]
+        string status_effect;
+        
+    public enum status_enum_effect
+        {
+            idle,walking,run
+        }
+
+        [SerializeField]
+         status_enum_effect Enum_effect;
 
         /*
     -player
@@ -51,6 +62,8 @@ namespace soundftx
         {
             //   OnSoundDataChanged(player_effect_sound.ToArray().s);
 
+            Enum_effect = status_enum_effect.idle;
+
             audioSource = GetComponent<AudioSource>();
 
         }
@@ -58,17 +71,45 @@ namespace soundftx
         // Update is called once per frame
         void Update()
         {
-           
-                // ???????????????????? Space
-                if (Input.GetKey(KeyCode.Space))
-                {
-                    PlayEffectSound("run"); // ??????????????????????????
-                }
-          
+
+            To_Be_Status();
+
+
 
 
         }
 
+        void To_Be_Status()
+        {
+            if(Input.anyKey == false )
+            {
+                //Enum_effect = status_enum_effect.idle;
+                Enum_effect = status_enum_effect.idle;
+
+
+                status_effect = "Idle";
+                Debug.Log(" idle status" + status_effect);
+
+               //status_enum_effect = status_enum_effect.idle;
+               // return;
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                Debug.Log("Key W pressed");
+                status_effect = "walking";
+                Enum_effect = status_enum_effect.walking;
+
+
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    Debug.Log("Key left + w pressed");
+                    status_effect = "Run";
+                    Enum_effect = status_enum_effect.run;
+
+                }
+            }
+        
+        }
 
         private void Awake()
         {
@@ -225,11 +266,13 @@ namespace soundftx
 
         void PlayEffectSound(string effectName)
         {
+           // Debug.Log(" audioSource.isPlaying :" + audioSource.isPlaying);
+
             // ??????????????????????????????????? list ???????
             if (list_player_effect_sound.Contains(effectName))
             {
                 // ??????????????????????????? Dictionary ????????? AudioClip ?????
-                if (player_effect_sound.TryGetValue(effectName, out AudioClip clip))
+                if (player_effect_sound.TryGetValue(effectName, out AudioClip clip) && audioSource.isPlaying == false)
                 {
 
                     // ????????????? AudioSource
@@ -243,7 +286,7 @@ namespace soundftx
                 }
                 else
                 {
-                    Debug.LogWarning($"Sound effect '{effectName}' not found in player_effect_sound dictionary.");
+                    Debug.LogWarning("music effect is playing or "+ $"Sound effect '{effectName}' not found in player_effect_sound dictionary.");
                 }
             }
             else
