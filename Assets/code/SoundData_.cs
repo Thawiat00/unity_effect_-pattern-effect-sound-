@@ -49,4 +49,13 @@ namespace soundftx
         public SoundFiles soundFiles;
     }
 
+
+    //for convset dictionary
+    [System.Serializable]
+    public class sound_convest
+    {
+        public string name;   // keep name
+        public AudioClip clip;  // for keep AudioClip
+                                // add another field etc  volume, loop 
+    }
 }

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.iOS;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
+using static UnityEngine.Tilemaps.TilemapRenderer;
 
 namespace soundftx
 {
@@ -10,14 +13,61 @@ namespace soundftx
     public class effect_sound_loading : MonoBehaviour, ISoundDataObserver
     {
         [SerializeField]
-        SoundManager sound_manager;
-
-       [SerializeField]
-        Dictionary<string, SoundData_> player_effect_sound;
+        bool forloading;
 
         [SerializeField]
-        List<AudioClip> list_player_effect_sound;
+        bool for_dictionary;
 
+
+        [SerializeField]
+        SoundManager sound_manager;
+
+        [SerializeField]
+        Dictionary<string, AudioClip> player_effect_sound;
+
+
+        //use sort data only
+        [SerializeField]
+        List<AudioClip> list_sort_audio;
+
+
+        //for play effect with string
+        [SerializeField]
+        List<string> list_player_effect_sound;
+
+        [SerializeField]
+        AudioSource audioSource;
+
+     
+
+        /*
+    -player
+-enermy
+-boss
+  */
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            //   OnSoundDataChanged(player_effect_sound.ToArray().s);
+
+            audioSource = GetComponent<AudioSource>();
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+           
+                // ???????????????????? Space
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    PlayEffectSound("run"); // ??????????????????????????
+                }
+          
+
+
+        }
 
 
         private void Awake()
@@ -25,6 +75,7 @@ namespace soundftx
             // ?????????????? sound_manager ???? ????????????????? Inspector ????
             if (sound_manager == null)
             {
+                if(forloading == true)
                 Debug.LogError("SoundManager is not assigned in the Inspector.");
             }
         }
@@ -45,115 +96,179 @@ namespace soundftx
             }
         }
 
+
         public void OnSoundDataChanged(SoundData_ soundData)
         {
-            Debug.Log("(class effect_sound_loading) use OnSoundDataChanged(SoundData_ soundData): " + soundData);
+            if (forloading == true)
+                Debug.Log("(class effect_sound_loading) use OnSoundDataChanged(SoundData_ soundData): " + soundData);
 
             // Load sound effects into the dictionary
             //  LoadSoundEffects(soundData);
 
-            Debug.Log("soundData.soundFiles.player :" + soundData.soundFiles.player);
+            if (forloading == true)
+                Debug.Log("soundData.soundFiles.player :" + soundData.soundFiles.player);
 
-            // LoadAudioClip(soundData.soundFiles.player);
 
-            // AudioClip audioClip = LoadAudioClip(soundData.soundFiles.player);
-            //list_player_effect_sound = LoadAudioClip(soundData.soundFiles.player);
-            // ????????????????????
             AudioClip[] audioClips = Resources.LoadAll<AudioClip>(soundData.soundFiles.player);
 
-            Debug.Log("audioClips :" + audioClips.Length);
-         //   Debug.Log("audioClips :" + audioClips[1].name);
 
-            foreach (var soundCategory_2 in audioClips)
+            // List<AudioClip> list_sort_audio = new List<AudioClip>();
+
+
+            //sort loop
+            // list_sort_audio.AddRange(audioClips);
+
+
+            list_sort_audio.AddRange(audioClips);
+            //    string clip1;
+
+
+            // ?????? sort
+            
+            list_sort_audio.Sort((clip1, clip2) =>
             {
-                Debug.Log("audioClips " + soundCategory_2.name);
-            }
+                // ?????????????????? string
+                string clip1Name = clip1.name;
+                string clip2Name = clip2.name;
 
-            // ?????????????? List
-          //  list_player_effect_sound = new List<AudioClip>();
-            list_player_effect_sound.AddRange(audioClips);
+                // if sort_data_sound_effect_player have data
+
+                foreach (var sort_data_sound_effect_player in soundData.soundCategories.player)
+                {
+                    foreach(var audioClips1 in list_sort_audio)
+                    {
+
+                        int comparison1 = clip1Name.CompareTo(audioClips1.name.ToString());
+
+
+                        //  int comparison1 = clip1Name.CompareTo(sort_data_sound_effect_player.id);
+                        int comparison2 = clip2Name.CompareTo(sort_data_sound_effect_player.id.ToString());
+
+                        // ????????????????????????
+                        if (comparison1 != 0)
+                        {
+                            return comparison1; // ??????????????????????????
+                        }
+                        if (comparison2 != 0)
+                        {
+                            return comparison2; // ??????????????????????????
+                        }
+
+                    }
+                
+                }
+
+                // ?????? 0 ?????????????????
+                return 0;
+            });
+            
+            
+
+
+            player_effect_sound = new Dictionary<string, AudioClip>();
+
 
             /*
-            if (audioClip !=null)
+            foreach (var load_clip in audioClips)
             {
-                Debug.Log("audioClip is not null");
-            }
-            else
-            {
-                Debug.Log("audioClip is null");
+                if(for_dictionary == true)
+                Debug.Log("load_clip :" + load_clip);
+
+               
+                player_effect_sound.Add(load_clip.name, load_clip);
+
+      
+
+                    foreach (var dictionary_player_effect_sound in player_effect_sound)
+                {
+                    if (for_dictionary == true)
+                        Debug.Log("dictionary_player_effect_sound (name)" + dictionary_player_effect_sound.Key);
+
+                    if (for_dictionary == true)
+                        Debug.Log("dictionary_player_effect_sound (file)" + dictionary_player_effect_sound.Value);
+                }
 
             }
 
             */
 
-            //     player_effect_sound = new Dictionary<AudioClip, SoundData_>(); // Ensure the dictionary is initialized
-            // player_effect_sound[audioClip] = soundData; // Store the AudioClip with the corresponding SoundData_
-        }
-
-      
-
-        private AudioClip LoadAudioClip(string key)
-        {
-            // Implement logic to load the AudioClip using the key
-            // For example, using Resources.Load or another method based on your project structure
-            return Resources.Load<AudioClip>("sound_ftx/" + key); // Adjust the path as necessary
-        }
-
-
-        /*
-
-        public void OnSoundDataChanged(SoundData_ soundData)
-        {
-            Debug.Log("(class  effect_sound_loading) use OnSoundDataChanged(SoundData_ soundData):  " + soundData);
-
-            // Loop through the sound categories and log them
-            foreach (var soundCategory in soundData.soundCategories.player)
+            foreach (var load_clip in list_sort_audio)
             {
-                Debug.Log("soundCategory: " + soundCategory.id.ToString());
-                Debug.Log("soundCategory: " + soundCategory.key.ToString());
 
-                foreach (var soundCategory_2 in soundData.soundFiles.player)
+                if (for_dictionary == true)
+                    Debug.Log("load_clip :" + load_clip);
+
+                //add in dictionary
+                player_effect_sound.Add(load_clip.name, load_clip);
+
+                //add for list string
+                list_player_effect_sound.Add(load_clip.name);
+
+                foreach (var dictionary_player_effect_sound in player_effect_sound)
                 {
-                   // foreach (var soundCategory_2 in soundData.soundCategories.player)
+                    if (for_dictionary == true)
+                        Debug.Log("dictionary_player_effect_sound (name)" + dictionary_player_effect_sound.Key);
 
+                    if (for_dictionary == true)
+                        Debug.Log("dictionary_player_effect_sound (file)" + dictionary_player_effect_sound.Value);
                 }
 
+            }
+               
 
 
-                // Handle each sound category as needed
+
+
+        }
+
+
+
+        void PlayEffectSound(string effectName)
+        {
+            // ??????????????????????????????????? list ???????
+            if (list_player_effect_sound.Contains(effectName))
+            {
+                // ??????????????????????????? Dictionary ????????? AudioClip ?????
+                if (player_effect_sound.TryGetValue(effectName, out AudioClip clip))
+                {
+
+                    // ????????????? AudioSource
+                    // audioSource.PlayOneShot(clip);
+                    // audioSource.pl
+                    // audioSource.
+
+                    audioSource.clip = clip;
+
+                    audioSource.Play();
+                }
+                else
+                {
+                    Debug.LogWarning($"Sound effect '{effectName}' not found in player_effect_sound dictionary.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Effect '{effectName}' is not listed in list_player_effect_sound.");
             }
         }
 
+        // player_effect_sound.AddRange(player_effect_sound);
 
-        */
+        //  Debug.Log("player_effect_sound.AddRange(player_effect_sound) :" + player_effect_sound.Count);
 
-        //  List<string,SoundData_> player_effect_sound ;
-        ///   List<string> enermy_effect_sound;
-        //    List<string> boss_effect_sound;
-
-        /*
-          -player
-  -enermy
-  -boss
-        */
-
-        // Start is called before the first frame update
-        void Start()
-    {
-         //   OnSoundDataChanged(player_effect_sound.ToArray().s);
-
-
+        //  player_effect_sound = Resources.LoadAll<AudioClip>(soundData.soundFiles.player);
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
 }
 
+       
 
-}
+
+
+  
+
+
+
+
+
+

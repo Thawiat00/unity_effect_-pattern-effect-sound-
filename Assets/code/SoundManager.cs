@@ -10,6 +10,9 @@ namespace soundftx
     public class SoundManager : MonoBehaviour
     {
         [SerializeField]
+        bool debug_loading;
+
+        [SerializeField]
         private SoundData_ soundData; // Updated variable name to match new class name
 
       //  [SerializeReference]
@@ -34,11 +37,15 @@ namespace soundftx
 
         private void NotifyObserversAfterLoad(SoundData_ soundData)
         {
+            if(debug_loading == true)
             Debug.Log(" NotifyObserversAfterLoad(SoundData_ soundData) working");
 
             foreach (var observer in observers)
             {
-                Debug.Log("  foreach (var observer in observers)");
+                if (debug_loading == true)
+                    Debug.Log("  foreach (var observer in observers)");
+
+
                 observer.OnSoundDataChanged(soundData);
             }
         }
@@ -59,14 +66,18 @@ namespace soundftx
             {
 
                 soundData = JsonUtility.FromJson<SoundData_>(jsonFile.text);
-                Debug.Log("Sound data loaded successfully from Resources.");
+
+                if (debug_loading == true)
+                    Debug.Log("Sound data loaded successfully from Resources.");
 
                 NotifyObserversAfterLoad(soundData);
 
             }
             else
             {
-                Debug.LogError("Sound effects file not found in Resources folder.");
+
+                if (debug_loading == true)
+                    Debug.LogError("Sound effects file not found in Resources folder.");
             }
 
           
