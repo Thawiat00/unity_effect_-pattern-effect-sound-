@@ -1,0 +1,22 @@
+-ตอเล่น method เสียง เหมือนจะมีเสียง ช็อตๆ อาจต้องแก้ให้ fix เสียงนั้นๆไปเลย (clear)
+ (แก้ไขด้วย isplaying)
+
+
+-หาตัวแปร รับค่า input ว่ากดอะไรไปบ้าง
+
+
+-ใช้ระบบ new input ใหม่ ติดตั้งและใช้งาน
+
+-ใช้สคริปการทำงานจาก new input 
+
+(ต้องใช้ unity 2023 เพื่ออัพแพท input 1.6.3 มาแก้บัค)
+
+https://community.gamedev.tv/t/getting-an-error-when-trying-to-add-a-control-scheme-via-input-actions/242409
+
+
+-----------------------------------
+
+
+
+
+
