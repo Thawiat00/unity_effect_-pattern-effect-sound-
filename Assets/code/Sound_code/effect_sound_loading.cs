@@ -42,7 +42,7 @@ namespace soundftx
         
     public enum status_enum_effect
         {
-            idle,walking,run
+            no_working,idle,walking,run
         }
 
         [SerializeField]
@@ -83,11 +83,16 @@ namespace soundftx
 
         void To_Be_Status()
         {
-            if(Input.anyKey == false )
+            //if()
+
+
+            if(Input.anyKey == false  && Enum_effect != status_enum_effect.idle)
             {
                 //Enum_effect = status_enum_effect.idle;
-                Enum_effect = status_enum_effect.idle;
-               // oldState = (int)Enum_effect;
+                 Enum_effect = status_enum_effect.idle;
+              //  Enum_effect = status_enum_effect.no_working;
+
+                // oldState = (int)Enum_effect;
 
 
 
