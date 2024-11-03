@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.iOS;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using static UnityEngine.Tilemaps.TilemapRenderer;
 
 namespace soundftx
 {
@@ -51,6 +48,11 @@ namespace soundftx
         [SerializeField]
          status_enum_effect Enum_effect;
 
+        [SerializeField]
+        private status_enum_effect previousEffect; // ????????????????????????
+
+
+
         /*
     -player
 -enermy
@@ -64,6 +66,9 @@ namespace soundftx
 
             Enum_effect = status_enum_effect.idle;
 
+            //oldState = (int)Enum_effect;
+
+
             audioSource = GetComponent<AudioSource>();
 
         }
@@ -74,9 +79,6 @@ namespace soundftx
 
             To_Be_Status();
 
-
-
-
         }
 
         void To_Be_Status()
@@ -85,27 +87,56 @@ namespace soundftx
             {
                 //Enum_effect = status_enum_effect.idle;
                 Enum_effect = status_enum_effect.idle;
+               // oldState = (int)Enum_effect;
+
 
 
                 status_effect = "Idle";
                 Debug.Log(" idle status" + status_effect);
 
-               //status_enum_effect = status_enum_effect.idle;
-               // return;
+                audioSource.Stop();
+                audioSource.clip = null;
+
+                //update old status;
+                previousEffect = Enum_effect;
+
+                //status_enum_effect = status_enum_effect.idle;
+                // return;
             }
             else if (Input.GetKey(KeyCode.W))
             {
-                Debug.Log("Key W pressed");
-                status_effect = "walking";
-                Enum_effect = status_enum_effect.walking;
-
-
-                if (Input.GetKey(KeyCode.Space))
+                if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    Debug.Log("Key left + w pressed");
-                    status_effect = "Run";
-                    Enum_effect = status_enum_effect.run;
+                    //if input  KeyCode.LeftShift
+                    //and if previousEffect status not  status(run) , maybe will display run status
+                    // ?????????????????????? run ?????????????????????
+                    if (previousEffect != status_enum_effect.run)
+                    {
+                        Debug.Log("Key left + w pressed (run)");
+                        status_effect = "run";
+                        Enum_effect = status_enum_effect.run;
+                        PlayEffectSound(status_effect);
+                    }
 
+                    //update old status;
+                    previousEffect = Enum_effect;
+                }
+                else
+                {
+                    //if input  KeyCode.W
+                    //and if previousEffect status not  status(walking) , besure will display walking status
+                    // ?????????????????????? walking ?????????????????????
+
+                    if (previousEffect != status_enum_effect.walking)
+                    {
+                        Debug.Log("Key W pressed (walking)");
+                        status_effect = "walking";
+                        Enum_effect = status_enum_effect.walking;
+                        PlayEffectSound(status_effect);
+                    }
+
+                    //update old status;
+                    previousEffect = Enum_effect;
                 }
             }
         
@@ -144,20 +175,12 @@ namespace soundftx
                 Debug.Log("(class effect_sound_loading) use OnSoundDataChanged(SoundData_ soundData): " + soundData);
 
             // Load sound effects into the dictionary
-            //  LoadSoundEffects(soundData);
 
             if (forloading == true)
                 Debug.Log("soundData.soundFiles.player :" + soundData.soundFiles.player);
 
 
             AudioClip[] audioClips = Resources.LoadAll<AudioClip>(soundData.soundFiles.player);
-
-
-            // List<AudioClip> list_sort_audio = new List<AudioClip>();
-
-
-            //sort loop
-            // list_sort_audio.AddRange(audioClips);
 
 
             list_sort_audio.AddRange(audioClips);
@@ -168,7 +191,7 @@ namespace soundftx
             
             list_sort_audio.Sort((clip1, clip2) =>
             {
-                // ?????????????????? string
+                //  string
                 string clip1Name = clip1.name;
                 string clip2Name = clip2.name;
 
@@ -182,17 +205,15 @@ namespace soundftx
                         int comparison1 = clip1Name.CompareTo(audioClips1.name.ToString());
 
 
-                        //  int comparison1 = clip1Name.CompareTo(sort_data_sound_effect_player.id);
                         int comparison2 = clip2Name.CompareTo(sort_data_sound_effect_player.id.ToString());
 
-                        // ????????????????????????
                         if (comparison1 != 0)
                         {
-                            return comparison1; // ??????????????????????????
+                            return comparison1; 
                         }
                         if (comparison2 != 0)
                         {
-                            return comparison2; // ??????????????????????????
+                            return comparison2;
                         }
 
                     }
@@ -209,29 +230,7 @@ namespace soundftx
             player_effect_sound = new Dictionary<string, AudioClip>();
 
 
-            /*
-            foreach (var load_clip in audioClips)
-            {
-                if(for_dictionary == true)
-                Debug.Log("load_clip :" + load_clip);
-
-               
-                player_effect_sound.Add(load_clip.name, load_clip);
-
       
-
-                    foreach (var dictionary_player_effect_sound in player_effect_sound)
-                {
-                    if (for_dictionary == true)
-                        Debug.Log("dictionary_player_effect_sound (name)" + dictionary_player_effect_sound.Key);
-
-                    if (for_dictionary == true)
-                        Debug.Log("dictionary_player_effect_sound (file)" + dictionary_player_effect_sound.Value);
-                }
-
-            }
-
-            */
 
             foreach (var load_clip in list_sort_audio)
             {
@@ -266,23 +265,35 @@ namespace soundftx
 
         void PlayEffectSound(string effectName)
         {
-           // Debug.Log(" audioSource.isPlaying :" + audioSource.isPlaying);
+
+            //if sound string have in list
 
             // ??????????????????????????????????? list ???????
             if (list_player_effect_sound.Contains(effectName))
             {
-                // ??????????????????????????? Dictionary ????????? AudioClip ?????
-                if (player_effect_sound.TryGetValue(effectName, out AudioClip clip) && audioSource.isPlaying == false)
-                {
+                //if effect sound is playing = false will try to get sound effect with string
 
-                    // ????????????? AudioSource
-                    // audioSource.PlayOneShot(clip);
-                    // audioSource.pl
-                    // audioSource.
+                //but... what if effect sound is playing but have to change sound effect, what have to do?
+                //you have to make new condition
+                //may be have to remove audioSource.isPlaying because isplaying will true or false have to do this codition
+                //may be have to use enum ...when change state will have to do this condition for play effect sound
+
+                // ??????????????????????????? Dictionary ????????? AudioClip ?????
+                if (player_effect_sound.TryGetValue(effectName, out AudioClip clip)  )
+                {
+                    // oldState = (int)Enum_effect;
+                    audioSource.clip = null;
+
+                    Debug.Log("Playeffect sound");
+
+                    // Debug.Log(audioSource.)
+
 
                     audioSource.clip = clip;
 
                     audioSource.Play();
+
+  
                 }
                 else
                 {
@@ -295,23 +306,7 @@ namespace soundftx
             }
         }
 
-        // player_effect_sound.AddRange(player_effect_sound);
-
-        //  Debug.Log("player_effect_sound.AddRange(player_effect_sound) :" + player_effect_sound.Count);
-
-        //  player_effect_sound = Resources.LoadAll<AudioClip>(soundData.soundFiles.player);
+  
 
     }
 }
-
-       
-
-
-
-  
-
-
-
-
-
-
